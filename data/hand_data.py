@@ -53,14 +53,20 @@ class DataLoader(object):
 
         print "Processing real hand dataset..."
         self.real_data = []
-        #for img_path in tqdm(self.real_data_paths):
-        for img_path in self.real_data_paths:
-            im = Image.open(img_path).convert('L')
-            im_new = np.asarray(im,dtype=np.uint8).copy()
-            im = normalize(im_new)
-            #im = normalize(imread(img_path))
-            self.real_data.append(im)
-        #self.real_data_paths = np.array(glob(os.path.join(self.png_real_path, '*.png')))
+        self.new_datapath = os.path.join(self.hand_data_path, "new_real_data")
+        if not os.path.exists(self.new_datapath):
+            os.mkdir(self.new_datapath)
+            counter = 0
+            #for img_path in tqdm(self.real_data_paths):
+            for img_path in self.real_data_paths:
+                im = Image.open(img_path).convert('L')
+                im_new = np.asarray(im,dtype=np.uint8).copy()
+                im = normalize(im_new)
+                #im = normalize(imread(img_path))
+                cv2.imwrite(self.new_datapath + "/data_" + str(counter) + ".png", im)
+                counter += 1
+                self.real_data.append(im)
+            #self.real_data_paths = np.array(glob(os.path.join(self.png_real_path, '*.png')))
         self.real_data_dims = list(self.real_data[0].shape) + [1]
 
 
