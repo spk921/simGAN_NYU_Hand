@@ -82,7 +82,7 @@ class Model(object):
         optim = tf.train.AdamOptimizer(self.learning_rate)
       else:
         raise Exception("[!] Unkown optimizer: {}".format(self.config.optimizer))
-
+#
       if self.max_grad_norm != None:
         grads_and_vars = optim.compute_gradients(loss)
         new_grads_and_vars = []
