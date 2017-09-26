@@ -1,0 +1,5 @@
+*.swp
+logs
+outputs
+data/hand
+*.pyc

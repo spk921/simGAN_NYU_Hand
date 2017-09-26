@@ -66,7 +66,14 @@ class DataLoader(object):
                 cv2.imwrite(self.new_datapath + "/data_" + str(counter) + ".png", im)
                 counter += 1
                 self.real_data.append(im)
-            #self.real_data_paths = np.array(glob(os.path.join(self.png_real_path, '*.png')))
+        else:
+            for img_path in self.real_data_paths:
+                im = Image.open(img_path).convert('L')
+                im_new = np.asarray(im,dtype=np.uint8).copy()
+                im = normalize(im_new)
+                #im = normalize(imread(img_path))
+                self.real_data.append(im)
+                break
         self.real_data_dims = list(self.real_data[0].shape) + [1]
 
 
