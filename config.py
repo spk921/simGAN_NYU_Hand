@@ -20,7 +20,7 @@ net_arg.add_argument('--channel_dims', type=eval, default='[]', help='')
 
 # Data
 data_arg = add_argument_group('Data')
-data_arg.add_argument('--data_set', type=str, default='hand')
+data_arg.add_argument('--data_set', type=str, default='multi')
 data_arg.add_argument('--data_dir', type=str, default='data')
 data_arg.add_argument('--input_height', type=int, default=128)
 data_arg.add_argument('--input_width', type=int, default=128)
@@ -29,13 +29,13 @@ data_arg.add_argument('--max_synthetic_num', type=int, default=-1)
 data_arg.add_argument('--real_image_dir', type=str, default="MPIIGaze")
 data_arg.add_argument('--synthetic_image_dir', type=str, default="UnityEyes")
 
-data_arg.add_argument('--hand_data_dir', type=str, default = 'png_cropped_dataset')
+data_arg.add_argument('--hand_data_dir', type=str, default = '')
 data_arg.add_argument('--joint_data_dir', type=str, default = 'cropped_dataset')
 data_arg.add_argument('--hand_data_dir_sub', type=str, default = '')
 
 # Training / test parameters
 train_arg = add_argument_group('Training')
-train_arg.add_argument('--task', type=str, default='generative', 
+train_arg.add_argument('--task', type=str, default='generative',
                        choices=['generative', 'estimation'], help='')
 train_arg.add_argument('--is_train', type=str2bool, default=True, help='')
 train_arg.add_argument('--max_step', type=int, default=10000, help='')

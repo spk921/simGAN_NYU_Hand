@@ -1,5 +1,6 @@
 import os
 import json
+import struct
 import numpy as np
 from datetime import datetime
 
@@ -8,17 +9,34 @@ import tensorflow.contrib.slim as slim
 
 try:
   import scipy.misc
-  imread = scipy.misc.imread
   imresize = scipy.misc.imresize
-  imwrite = scipy.misc.imsave
 except:
   import cv2
-  imread = cv2.imread
   imresize = cv2.resize
-  imwrite = cv2.imwrite
 
 import scipy.io as sio
 loadmat = sio.loadmat
+
+def imread(path):
+  imsz = 128*128
+  buffsz = imsz*1
+  form = '<'+str(buffsz)+'f'
+  fp = open(path,'rb')
+  f = fp.read(buffsz*4)
+  fp.close()
+  data = struct.unpack(form,f)
+  idx = 0
+  img = np.array(data)[imsz*idx:imsz*(idx+1)]
+  img = img.reshape((128,128))
+  return img
+def imwrite(wpath,img):
+  buffsz = len(img)**2
+  img = img.reshape(buffsz)
+  myfmt = 'f'*buffsz
+  bin = struct.pack(myfmt, *img)
+  f=open(wpath,'wb')
+  f.write(bin)
+  f.close()
 
 def prepare_dirs(config):
   if config.load_path:

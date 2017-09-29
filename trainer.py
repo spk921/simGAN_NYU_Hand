@@ -6,8 +6,7 @@ from tensorflow.contrib.framework.python.ops import arg_scope
 
 from model import Model
 from buffer import Buffer
-import data.gaze_data as gaze_data
-import data.hand_data as hand_data
+import data.multi_data as multi_data
 from utils import imwrite, imread, img_tile
 
 class Trainer(object):
@@ -29,8 +28,7 @@ class Trainer(object):
     self.checkpoint_secs = config.checkpoint_secs
 
     DataLoader = {
-        'gaze': gaze_data.DataLoader,
-        'hand': hand_data.DataLoader,
+        'multi': multi_data.DataLoader,
     }[config.data_set]
     self.data_loader = DataLoader(config, rng=self.rng)
 

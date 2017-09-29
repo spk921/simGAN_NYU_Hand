@@ -1,5 +1,6 @@
 import tensorflow as tf
 import tensorflow.contrib.slim as slim
+import glog as log
 from tensorflow.contrib.framework import add_arg_scope
 
 #computes sparse softmax cross entropy between logits and labels
@@ -20,9 +21,12 @@ def _update_dict(layer_dict, scope, layer):
 
 def image_from_paths(paths, shape, is_grayscale=True, seed=None):
   filename_queue = tf.train.string_input_producer(list(paths), shuffle=False, seed=seed)
-  reader = tf.WholeFileReader()
+  reader = tf.FixedLengthRecordReader(record_bytes=128*128*4)
   filename, data = reader.read(filename_queue)
-  image = tf.image.decode_png(data, channels=3, dtype=tf.uint8)
+  log.info(filename)
+  log.info(data)
+  image = tf.decode_raw(data, tf.float32)
+  image = tf.reshape(image,[128,128,1])
   # print image
 
   if is_grayscale:
@@ -61,7 +65,7 @@ def conv2d(inputs, num_outputs, kernel_size, stride,
            scope=None, name="", **kargv):
   outputs = slim.conv2d(
       inputs, num_outputs, kernel_size,
-      stride, activation_fn=activation_fn, 
+      stride, activation_fn=activation_fn,
       weights_initializer=weights_initializer,
     biases_initializer=tf.constant_initializer(0.0), scope=scope, **kargv)
       #biases_initializer=tf.zeros_initializer(dtype=tf.float32), scope=scope, **kargv)

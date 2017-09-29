@@ -333,7 +333,7 @@ class Model(object):
   def _build_refiner(self, layer):
     with tf.variable_scope("refiner") as sc:
       layer = repeat(layer, 10, resnet_block, scope="resnet")
-      layer = conv2d(layer, 1, 1, 1, 
+      layer = conv2d(layer, 1, 1, 1,
                      activation_fn=None, scope="conv_1")
       output = tanh(layer, name="tanh")
       self.refiner_vars = tf.contrib.framework.get_variables(sc)
