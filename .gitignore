@@ -1,5 +1,7 @@
 *.swp
+*.mat
 logs
 outputs
 data/hand
 *.pyc
+samples
