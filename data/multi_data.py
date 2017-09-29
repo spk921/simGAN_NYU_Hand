@@ -8,41 +8,32 @@ import cv2
 
 from PIL import Image
 from glob import glob
+import glog as log
 from tqdm import tqdm
 from six.moves import urllib
 
 import numpy as np
 import struct
 
-from utils import loadmat
-def imread(path):
-  imsz = 128*128
-  buffsz = imsz*1
-  form = '<'+str(buffsz)+'f'
-  fp = open(path,'rb')
-  f = fp.read(buffsz*4)
-  fp.close()
-  data = struct.unpack(form,f)
-  idx = 0
-  img = np.array(data)[imsz*idx:imsz*(idx+1)]
-  img = img.reshape((128,128))
-  return img
-def imwrite(wpath,img):
-  buffsz = len(img)**2
-  img = img.reshape(buffsz)
-  myfmt = 'f'*buffsz
-  bin = struct.pack(myfmt, *img)
-  f=open(wpath,'wb')
-  f.write(bin)
-  f.close()
-def normalize(arr):
-    # minval = np.min(arr[np.nonzero(arr)])
-    minval = arr.min()
-    maxval = arr.max()
+from utils import loadmat, imwrite, imread
 
-    if minval != maxval:
-      arr -= minval
-      arr *= (255/(maxval-minval))
+def normalize(arr):
+    maxval = np.amax(arr)
+    arr = maxval - arr
+
+    minval = np.min(arr[np.nonzero(arr)])
+    maxval = np.amax(arr)
+
+    arr -= minval
+    arr *= ((maxval)/(maxval-minval))
+    minval = np.amin(arr)
+    maxval = np.amax(arr)
+
+    log.info("MIN: "+str(minval))
+    log.info("MAX: "+str(maxval))
+
+    arr_idx = arr <= minval
+    arr[arr_idx] =  1.0
 
     return arr
 
@@ -81,12 +72,14 @@ class DataLoader(object):
             counter = 0
             #for img_path in tqdm(self.real_data_paths):
             for img_path in self.real_data_paths:
-              im = imread(img_path)
-              #im = normalize(imread(img_path))
+              im_new = imread(img_path,length=11,real=False)
+              im = normalize(im_new)
               imwrite(self.new_datapath + "/data_" + str(counter) + ".bin",im)
+              cv2.imshow("real",im)
+              cv2.waitKey(1)
               counter += 1
               self.real_data.append(im)
-              if counter == 100:
+              if counter == 1000:
                 break
         else:
             for img_path in self.real_data_paths:
@@ -103,15 +96,15 @@ class DataLoader(object):
             os.mkdir(self.new_datapath)
             counter = 0
             for img_path in self.synthetic_data_paths:
-              #im = normalize(imread(img_path))
               im_new = imread(img_path)
+              im = normalize(im_new)
               #print self.new_datapath + "/data_" + str(counter) + ".bin"
               imwrite(self.new_datapath + "/data_" + str(counter) + ".bin",im)
-              # print "writing to path: " + str(img_path)
-              # cv2.imshow("test",im)
-              # cv2.waitKey(1)
+              print "writing to path: " + str(img_path)
+              cv2.imshow("syn",im)
+              cv2.waitKey(1)
               counter += 1
-              if counter == 100:
+              if counter == 1000:
                 break
 
         #print self.new_datapath

@@ -59,7 +59,8 @@ class Model(object):
           self.test_x_filename, self.test_x
 
     self.y = tf.placeholder(
-        tf.uint8, [None, None, None, self.input_channel], name='real_inputs')
+        #tf.uint8, [None, None, None, self.input_channel], name='real_inputs')
+        tf.float32, [None, None, None, self.input_channel], name='real_inputs')
     self.R_x_history = tf.placeholder(
         tf.float32, [None, None, None, self.input_channel], 'R_x_history')
 
@@ -287,6 +288,7 @@ class Model(object):
           'loss': self.refiner_loss,
           'optim': self.refiner_optim,
           'step': self.refiner_step,
+          'norm_x': self.normalized_x,
       }
       return run(sess, feed_dict, fetch,
                  self.refiner_summary, summary_writer,

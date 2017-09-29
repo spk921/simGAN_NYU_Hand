@@ -1,5 +1,8 @@
 import os
+import cv2
 import numpy as np
+import glog as log
+from scipy.misc import imsave as imwrite
 from tqdm import trange
 import tensorflow as tf
 from tensorflow.contrib.framework.python.ops import arg_scope
@@ -7,7 +10,7 @@ from tensorflow.contrib.framework.python.ops import arg_scope
 from model import Model
 from buffer import Buffer
 import data.multi_data as multi_data
-from utils import imwrite, imread, img_tile
+from utils import imread, img_tile
 
 class Trainer(object):
   def __init__(self, config, rng):
@@ -88,6 +91,9 @@ class Trainer(object):
       res = self.model.train_refiner(
           self.sess, feed_dict, self._summary_writer, with_output=True)
       self._summary_writer = self._get_summary_writer(res)
+
+      #cv2.imshow("norm_x",res['norm_x'][0])
+      #cv2.waitKey(10)
 
       if push_buffer:
         self.history_buffer.push(res['output'])

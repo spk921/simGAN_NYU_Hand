@@ -17,15 +17,21 @@ except:
 import scipy.io as sio
 loadmat = sio.loadmat
 
-def imread(path):
+def imread(path,length=1,real=True):
   imsz = 128*128
-  buffsz = imsz*1
+  buffsz = imsz*length
   form = '<'+str(buffsz)+'f'
   fp = open(path,'rb')
   f = fp.read(buffsz*4)
   fp.close()
   data = struct.unpack(form,f)
-  idx = 0
+  if length == 1:
+    idx = 0
+  else:
+    if real:
+      idx = 0
+    else:
+      idx = 10
   img = np.array(data)[imsz*idx:imsz*(idx+1)]
   img = img.reshape((128,128))
   return img

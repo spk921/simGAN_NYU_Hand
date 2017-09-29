@@ -10,10 +10,12 @@ def int_shape(x):
   return list(map(int, x.get_shape()[1: ]))
 
 def normalize(layer):
-  return layer/127.5 - 1.
+  return layer
+  #return layer/127.5 - 1.
 
 def denormalize(layer):
-  return (layer + 1.)/2.
+  return layer
+  #return (layer + 1.)/2.
 
 def _update_dict(layer_dict, scope, layer):
   name = "{}/{}".format(tf.get_variable_scope().name, scope)
@@ -29,8 +31,8 @@ def image_from_paths(paths, shape, is_grayscale=True, seed=None):
   image = tf.reshape(image,[128,128,1])
   # print image
 
-  if is_grayscale:
-    image = tf.image.rgb_to_grayscale(image)
+  #if is_grayscale:
+  #  image = tf.image.rgb_to_grayscale(image)
   # print image
   #input("pause")
   image.set_shape(shape)
